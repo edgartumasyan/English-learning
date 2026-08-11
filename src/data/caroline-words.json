@@ -1,0 +1,422 @@
+[
+  {
+    "id": 1,
+    "english": "polite",
+    "russian": "вежливый",
+    "armenian": "քաղաքավարի"
+  },
+  {
+    "id": 2,
+    "english": "throw",
+    "russian": "бросать",
+    "armenian": "նետել"
+  },
+  {
+    "id": 3,
+    "english": "pleasant",
+    "russian": "приятный",
+    "armenian": "հաճելի"
+  },
+  {
+    "id": 4,
+    "english": "against",
+    "russian": "против",
+    "armenian": "դեմ"
+  },
+  {
+    "id": 5,
+    "english": "accident",
+    "russian": "несчастный случай",
+    "armenian": "պատահար"
+  },
+  {
+    "id": 6,
+    "english": "expensive",
+    "russian": "дорогой",
+    "armenian": "թանկ"
+  },
+  {
+    "id": 7,
+    "english": "cheap",
+    "russian": "дешёвый",
+    "armenian": "էժան"
+  },
+  {
+    "id": 8,
+    "english": "boring",
+    "russian": "скучный",
+    "armenian": "ձանձրալի"
+  },
+  {
+    "id": 9,
+    "english": "important",
+    "russian": "важный",
+    "armenian": "կարևոր"
+  },
+  {
+    "id": 10,
+    "english": "confident",
+    "russian": "уверенный",
+    "armenian": "ինքնավստահ"
+  },
+  {
+    "id": 11,
+    "english": "independent",
+    "russian": "независимый",
+    "armenian": "անկախ"
+  },
+  {
+    "id": 12,
+    "english": "responsible",
+    "russian": "ответственный",
+    "armenian": "պատասխանատու"
+  },
+  {
+    "id": 13,
+    "english": "generous",
+    "russian": "щедрый",
+    "armenian": "առատաձեռն"
+  },
+  {
+    "id": 14,
+    "english": "rude",
+    "russian": "грубый",
+    "armenian": "կոպիտ"
+  },
+  {
+    "id": 15,
+    "english": "honest",
+    "russian": "честный",
+    "armenian": "ազնիվ"
+  },
+  {
+    "id": 16,
+    "english": "lazy",
+    "russian": "ленивый",
+    "armenian": "ծույլ"
+  },
+  {
+    "id": 17,
+    "english": "creative",
+    "russian": "творческий",
+    "armenian": "ստեղծագործական"
+  },
+  {
+    "id": 18,
+    "english": "brave",
+    "russian": "храбрый",
+    "armenian": "քաջ"
+  },
+  {
+    "id": 19,
+    "english": "nature",
+    "russian": "природа",
+    "armenian": "բնություն"
+  },
+  {
+    "id": 20,
+    "english": "pain",
+    "russian": "боль",
+    "armenian": "ցավ"
+  },
+  {
+    "id": 21,
+    "english": "able",
+    "russian": "способный",
+    "armenian": "ունակ, կարող"
+  },
+  {
+    "id": 22,
+    "english": "punish",
+    "russian": "наказывать",
+    "armenian": "պատժել"
+  },
+  {
+    "id": 23,
+    "english": "habit",
+    "russian": "привычка",
+    "armenian": "սովորություն"
+  },
+  {
+    "id": 24,
+    "english": "calm",
+    "russian": "спокойный",
+    "armenian": "հանգիստ"
+  },
+  {
+    "id": 25,
+    "english": "content",
+    "russian": "содержание",
+    "armenian": "բովանդակություն"
+  },
+  {
+    "id": 26,
+    "english": "feel",
+    "russian": "чувствовать",
+    "armenian": "զգալ"
+  },
+  {
+    "id": 27,
+    "english": "special",
+    "russian": "особенный",
+    "armenian": "հատուկ"
+  },
+  {
+    "id": 28,
+    "english": "change",
+    "russian": "изменять",
+    "armenian": "փոխել"
+  },
+  {
+    "id": 29,
+    "english": "friendship",
+    "russian": "дружба",
+    "armenian": "ընկերություն"
+  },
+  {
+    "id": 30,
+    "english": "describe",
+    "russian": "описывать",
+    "armenian": "նկարագրել"
+  },
+  {
+    "id": 31,
+    "english": "fluency",
+    "russian": "беглость",
+    "armenian": "սահունություն"
+  },
+  {
+    "id": 32,
+    "english": "known",
+    "russian": "известный",
+    "armenian": "հայտնի"
+  },
+  {
+    "id": 33,
+    "english": "statue",
+    "russian": "статуя",
+    "armenian": "արձան"
+  },
+  {
+    "id": 34,
+    "english": "incredible",
+    "russian": "невероятный",
+    "armenian": "անհավանական"
+  },
+  {
+    "id": 35,
+    "english": "avoid",
+    "russian": "избегать",
+    "armenian": "խուսափել"
+  },
+  {
+    "id": 36,
+    "english": "noise",
+    "russian": "шум",
+    "armenian": "աղմուկ"
+  },
+  {
+    "id": 37,
+    "english": "candle",
+    "russian": "свеча",
+    "armenian": "մոմ"
+  },
+  {
+    "id": 38,
+    "english": "guess",
+    "russian": "угадывать",
+    "armenian": "գուշակել, կռահել"
+  },
+  {
+    "id": 39,
+    "english": "confuse",
+    "russian": "путать",
+    "armenian": "շփոթել"
+  },
+  {
+    "id": 40,
+    "english": "childhood",
+    "russian": "детство",
+    "armenian": "մանկություն"
+  },
+  {
+    "id": 41,
+    "english": "both",
+    "russian": "оба",
+    "armenian": "երկուսն էլ"
+  },
+  {
+    "id": 42,
+    "english": "become",
+    "russian": "становиться",
+    "armenian": "դառնալ"
+  },
+  {
+    "id": 43,
+    "english": "town",
+    "russian": "городок",
+    "armenian": "քաղաք"
+  },
+  {
+    "id": 44,
+    "english": "city",
+    "russian": "город",
+    "armenian": "քաղաք"
+  },
+  {
+    "id": 45,
+    "english": "hidden",
+    "russian": "скрытый",
+    "armenian": "թաքնված"
+  },
+  {
+    "id": 46,
+    "english": "remind",
+    "russian": "напоминать",
+    "armenian": "հիշեցնել"
+  },
+  {
+    "id": 47,
+    "english": "probably",
+    "russian": "вероятно",
+    "armenian": "հավանաբար"
+  },
+  {
+    "id": 48,
+    "english": "opinion",
+    "russian": "мнение",
+    "armenian": "կարծիք"
+  },
+  {
+    "id": 49,
+    "english": "approach",
+    "russian": "подход",
+    "armenian": "մոտեցում"
+  },
+  {
+    "id": 50,
+    "english": "classmate",
+    "russian": "одноклассник",
+    "armenian": "դասընկեր"
+  },
+  {
+    "id": 51,
+    "english": "doll",
+    "russian": "кукла",
+    "armenian": "տիկնիկ"
+  },
+  {
+    "id": 52,
+    "english": "cloud",
+    "russian": "облако",
+    "armenian": "ամպ"
+  },
+  {
+    "id": 53,
+    "english": "grade",
+    "russian": "оценка",
+    "armenian": "գնահատական"
+  },
+  {
+    "id": 54,
+    "english": "wish",
+    "russian": "желание",
+    "armenian": "ցանկություն"
+  },
+  {
+    "id": 55,
+    "english": "donate",
+    "russian": "жертвовать",
+    "armenian": "նվիրաբերել"
+  },
+  {
+    "id": 56,
+    "english": "sea",
+    "russian": "море",
+    "armenian": "ծով"
+  },
+  {
+    "id": 57,
+    "english": "view",
+    "russian": "вид",
+    "armenian": "տեսարան"
+  },
+  {
+    "id": 58,
+    "english": "touch",
+    "russian": "трогать",
+    "armenian": "հպում"
+  },
+  {
+    "id": 59,
+    "english": "devote",
+    "russian": "посвящать",
+    "armenian": "նվիրել"
+  },
+  {
+    "id": 60,
+    "english": "steal",
+    "russian": "воровать",
+    "armenian": "գողանալ"
+  },
+  {
+    "id": 61,
+    "english": "blame",
+    "russian": "обвинять",
+    "armenian": "մեղադրել"
+  },
+  {
+    "id": 62,
+    "english": "govern",
+    "russian": "управлять",
+    "armenian": "կառավարել"
+  },
+  {
+    "id": 63,
+    "english": "pillow",
+    "russian": "подушка",
+    "armenian": "բարձ"
+  },
+  {
+    "id": 64,
+    "english": "bride",
+    "russian": "невеста",
+    "armenian": "հարսնացու"
+  },
+  {
+    "id": 65,
+    "english": "pray",
+    "russian": "молиться",
+    "armenian": "աղոթել"
+  },
+  {
+    "id": 66,
+    "english": "routine",
+    "russian": "рутина",
+    "armenian": "առօրյա"
+  },
+  {
+    "id": 67,
+    "english": "fever",
+    "russian": "высокая температура",
+    "armenian": "ջերմություն"
+  },
+  {
+    "id": 68,
+    "english": "trap",
+    "russian": "ловушка",
+    "armenian": "ծուղակ, թակարդ"
+  },
+  {
+    "id": 69,
+    "english": "mood",
+    "russian": "настроение",
+    "armenian": "տրամադրություն"
+  },
+  {
+    "id": 70,
+    "english": "impress",
+    "russian": "произвести впечатление",
+    "armenian": "տպավորել"
+  }
+]
