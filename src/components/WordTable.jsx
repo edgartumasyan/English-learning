@@ -7,6 +7,18 @@ const LIST_HEIGHT = 600;
 
 function WordTable({ words, isShuffled, onShuffle, onResetOrder, pdfSource }) {
   const [visibility, setVisibility] = useState({});
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleDownloadPdf = useCallback(async () => {
+    setIsExporting(true);
+    try {
+      const { exportWordsToPdf } = await import("../exportPdf");
+      const ordered = [...words].sort((a, b) => a.id - b.id);
+      await exportWordsToPdf(ordered, pdfSource);
+    } finally {
+      setIsExporting(false);
+    }
+  }, [words, pdfSource]);
 
   const handleRevealAll = useCallback(() => {
     const next = {};
@@ -63,6 +75,13 @@ function WordTable({ words, isShuffled, onShuffle, onResetOrder, pdfSource }) {
             Shuffle
           </button>
         )}
+        <button
+          className="btn btn-pdf"
+          onClick={handleDownloadPdf}
+          disabled={isExporting}
+        >
+          {isExporting ? "Generating…" : "Download PDF"}
+        </button>
         <span className="word-count">{words.length} words</span>
       </div>
       <div className="table-header">
