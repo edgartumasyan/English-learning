@@ -446,6 +446,32 @@
   font-weight: 600;
 }
 
+/* On wider screens the card collapses from two stacked rows into a single row:
+   number · English · speak · Armenian · Russian · delete. The two row wrappers
+   become `display:contents` so their children lay out directly on the card,
+   already in the right order. */
+@media (min-width: 720px) {
+  .word-card {
+    flex-direction: row;
+    align-items: center;
+  }
+  .card-top,
+  .card-trans {
+    display: contents;
+  }
+  .card-index {
+    width: 24px;
+    height: 24px;
+    font-size: 0.7rem;
+  }
+  .card-english {
+    flex: 2 1 200px;
+  }
+  .chip {
+    flex: 1 1 160px;
+  }
+}
+
 /* ---- Practice ---- */
 .practice {
   flex: 1;
