@@ -200,6 +200,6 @@ function wordsApiPlugin() {
 }
 
 export default defineConfig({
-  base: "/English-learning/",
+  base: "/Fluent/",
   plugins: [react(), wordsApiPlugin()],
 });
