@@ -19,51 +19,36 @@ const SpeakerIcon = () => (
   </svg>
 );
 
-// One virtualized row = one word card. `style` (absolute positioning) comes from
-// react-window; we add bottom padding to create the gap between cards.
-const WordCardRow = memo(function WordCardRow({
-  index,
-  style,
-  words,
-  visibility,
-  onToggle,
-}) {
-  const word = words[index];
-  const vis = visibility[word.id] || {};
-
+// A single word card: number, English, pronounce button, then the Armenian and
+// Russian translations — all on one wrapping flex row (mobile redesign).
+const WordCardRow = memo(function WordCardRow({ word, index, vis, onToggle }) {
   return (
-    <div style={{ ...style, padding: "0 18px 10px" }}>
-      <div className="word-card">
-        <div className="card-top">
-          <div className="card-index">{index + 1}</div>
-          <div
-            className={vis.english ? "card-english shown" : "card-english hidden"}
-            onClick={() => onToggle(word.id, "english")}
-          >
-            {vis.english ? word.english : "Tap to reveal"}
-          </div>
-          <button
-            className="speak-btn"
-            onClick={() => speakWord(word.english)}
-            aria-label={`Pronounce ${word.english}`}
-          >
-            <SpeakerIcon />
-          </button>
-        </div>
-        <div className="card-trans">
-          <div
-            className={vis.armenian ? "chip chip-a shown" : "chip hidden"}
-            onClick={() => onToggle(word.id, "armenian")}
-          >
-            {vis.armenian ? word.armenian : "Armenian"}
-          </div>
-          <div
-            className={vis.russian ? "chip chip-r shown" : "chip hidden"}
-            onClick={() => onToggle(word.id, "russian")}
-          >
-            {vis.russian ? word.russian : "Russian"}
-          </div>
-        </div>
+    <div className="word-card">
+      <div className="card-index">{index}</div>
+      <div
+        className={vis.english ? "card-english shown" : "card-english hidden"}
+        onClick={() => onToggle(word.id, "english")}
+      >
+        {vis.english ? word.english : "Tap to reveal"}
+      </div>
+      <button
+        className="speak-btn"
+        onClick={() => speakWord(word.english)}
+        aria-label={`Pronounce ${word.english}`}
+      >
+        <SpeakerIcon />
+      </button>
+      <div
+        className={vis.armenian ? "chip chip-a shown" : "chip hidden"}
+        onClick={() => onToggle(word.id, "armenian")}
+      >
+        {vis.armenian ? word.armenian : "Armenian"}
+      </div>
+      <div
+        className={vis.russian ? "chip chip-r shown" : "chip hidden"}
+        onClick={() => onToggle(word.id, "russian")}
+      >
+        {vis.russian ? word.russian : "Russian"}
       </div>
     </div>
   );

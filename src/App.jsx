@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import BrowseView from "./components/BrowseView";
 import PracticeView from "./components/PracticeView";
+import CodeGateSheet from "./components/CodeGateSheet";
 import AddWordSheet from "./components/AddWordSheet";
 import { getWords, addWord } from "./data";
 import { themeVars } from "./theme";
@@ -15,6 +16,9 @@ const TABS = [
   { key: "browse", label: "Browse" },
   { key: "practice", label: "Practice" },
 ];
+
+// Access code required before the add-word form is revealed.
+const ACCESS_CODE = "123456";
 
 const EMPTY_WORD = { english: "", armenian: "", russian: "" };
 
@@ -52,7 +56,8 @@ function App() {
   const [visibility, setVisibility] = useState({});
   const [practiceIdx, setPracticeIdx] = useState(0);
   const [practiceFront, setPracticeFront] = useState(true);
-  const [addOpen, setAddOpen] = useState(false);
+  // "closed" → "code" (access gate) → "form" (add word).
+  const [gateStep, setGateStep] = useState("closed");
   const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
@@ -115,10 +120,19 @@ function App() {
     }
   }, [words, profile]);
 
+  const openAdd = () => setGateStep("code");
+  const closeAdd = () => setGateStep("closed");
+
+  const verifyCode = (code) => {
+    if (code !== ACCESS_CODE) return false;
+    setGateStep("form");
+    return true;
+  };
+
   const handleAddWord = (fields) => {
     addWord(profile, fields);
     setWords(getWords(profile));
-    setAddOpen(false);
+    setGateStep("closed");
   };
 
   const practiceWord = words[practiceIdx] || EMPTY_WORD;
@@ -139,42 +153,47 @@ function App() {
     <div className="app-page" style={pageStyle}>
       <div className="app-container">
         <header className="app-header">
-          <div className="brand-row">
-            <div className="brand">
-              <div className="brand-logo">L</div>
-              <div className="brand-name">Lexi</div>
+          <div className="header-inner">
+            <div className="brand-row">
+              <div className="brand">
+                <div className="brand-mark">
+                  <span className="mark-a" />
+                  <span className="mark-b" />
+                </div>
+                <div className="brand-name">Fluent</div>
+              </div>
+              <button
+                className="theme-toggle"
+                onClick={toggleTheme}
+                aria-label="Toggle theme"
+              >
+                {theme === "dark" ? <MoonIcon /> : <SunIcon />}
+              </button>
             </div>
-            <button
-              className="theme-toggle"
-              onClick={toggleTheme}
-              aria-label="Toggle theme"
-            >
-              {theme === "dark" ? <MoonIcon /> : <SunIcon />}
-            </button>
-          </div>
 
-          <div className="segment">
-            {PROFILES.map((p) => (
-              <button
-                key={p.key}
-                className={`segment-btn ${profile === p.key ? "active" : ""}`}
-                onClick={() => handleProfileChange(p.key)}
-              >
-                {p.label}
-              </button>
-            ))}
-          </div>
+            <div className="segment">
+              {PROFILES.map((p) => (
+                <button
+                  key={p.key}
+                  className={`segment-btn ${profile === p.key ? "active" : ""}`}
+                  onClick={() => handleProfileChange(p.key)}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
 
-          <div className="tabs">
-            {TABS.map((tb) => (
-              <button
-                key={tb.key}
-                className={`tab-btn ${mode === tb.key ? "active" : ""}`}
-                onClick={() => handleModeChange(tb.key)}
-              >
-                {tb.label}
-              </button>
-            ))}
+            <div className="tabs">
+              {TABS.map((tb) => (
+                <button
+                  key={tb.key}
+                  className={`tab-btn ${mode === tb.key ? "active" : ""}`}
+                  onClick={() => handleModeChange(tb.key)}
+                >
+                  {tb.label}
+                </button>
+              ))}
+            </div>
           </div>
         </header>
 
@@ -201,19 +220,16 @@ function App() {
           />
         )}
 
-        <button
-          className="fab"
-          onClick={() => setAddOpen(true)}
-          aria-label="Add word"
-        >
+        <button className="fab" onClick={openAdd} aria-label="Add word">
           +
         </button>
 
-        {addOpen && (
-          <AddWordSheet
-            onClose={() => setAddOpen(false)}
-            onAdd={handleAddWord}
-          />
+        {gateStep === "code" && (
+          <CodeGateSheet onClose={closeAdd} onVerify={verifyCode} />
+        )}
+
+        {gateStep === "form" && (
+          <AddWordSheet onClose={closeAdd} onAdd={handleAddWord} />
         )}
       </div>
     </div>
