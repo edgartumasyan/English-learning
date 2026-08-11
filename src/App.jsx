@@ -71,6 +71,9 @@ function App() {
   const [practiceShuffle, setPracticeShuffle] = useState(false);
   const [shuffleOrder, setShuffleOrder] = useState(null);
   const [hideWord, setHideWord] = useState(false);
+  // Tracks whether the Browse list has been shuffled out of its canonical order,
+  // so the toolbar can offer a "Reset Order" action to restore it.
+  const [browseShuffled, setBrowseShuffled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   // Add/delete both pass through the code gate:
   // "closed" → "code" → ("form" for add | word removed for delete)
@@ -86,6 +89,7 @@ function App() {
     setPracticeFront(true);
     setPracticeShuffle(false);
     setShuffleOrder(null);
+    setBrowseShuffled(false);
   }, [profile]);
 
   const toggleTheme = useCallback(() => {
@@ -133,7 +137,16 @@ function App() {
   const shuffle = useCallback(() => {
     setWords((prev) => shuffleArray(prev));
     setVisibility({});
+    setBrowseShuffled(true);
   }, []);
+
+  // Restores the canonical order (bundled words then locally-added, minus
+  // deleted) that getWords returns for the active profile.
+  const resetOrder = useCallback(() => {
+    setWords(getWords(profile));
+    setVisibility({});
+    setBrowseShuffled(false);
+  }, [profile]);
 
   const handleDownloadPdf = useCallback(async () => {
     setIsExporting(true);
@@ -277,6 +290,8 @@ function App() {
             onRevealAll={revealAll}
             onHideAll={hideAll}
             onShuffle={shuffle}
+            shuffled={browseShuffled}
+            onResetOrder={resetOrder}
             onDownloadPdf={handleDownloadPdf}
             pdfLabel={isExporting ? "Generating…" : "PDF"}
           />
