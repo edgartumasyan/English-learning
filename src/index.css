@@ -15,6 +15,27 @@ body,
   min-height: 100dvh;
 }
 
+/* Always reserve the scrollbar gutter to avoid layout shift, and style it to
+   match the app chrome (thin, muted grey in both themes). */
+body {
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.6) transparent;
+}
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.55);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.85);
+}
+
 a {
   color: #38bdf8;
 }
