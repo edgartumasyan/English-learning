@@ -669,9 +669,17 @@
   left: 16px;
 }
 
-.flashcard {
+/* Card + overlaid navigation arrows. The wrapper is the positioning context so
+   the arrows sit on the card edges; the card itself handles tap-to-flip and
+   horizontal swipe (touch-action:pan-y keeps vertical page scroll working). */
+.practice-card-wrap {
+  position: relative;
   width: 100%;
   max-width: 420px;
+}
+
+.flashcard {
+  width: 100%;
   aspect-ratio: 4 / 3;
   background: var(--surface);
   border-radius: 22px;
@@ -683,7 +691,31 @@
   cursor: pointer;
   padding: 24px;
   text-align: center;
+  touch-action: pan-y;
   animation: flip 0.25s ease;
+}
+
+.card-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: none;
+  background: var(--surface-alt);
+  color: var(--text);
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+.card-nav-btn.prev {
+  left: 14px;
+}
+.card-nav-btn.next {
+  right: 14px;
 }
 
 .flash-word {
@@ -771,32 +803,6 @@
 .mark-wrong-btn.on {
   background: #f87171;
   color: #fff;
-}
-
-.practice-nav {
-  display: flex;
-  gap: 10px;
-  width: 100%;
-  max-width: 420px;
-  margin-top: auto;
-}
-
-.nav-btn {
-  flex: 1;
-  padding: 14px;
-  border-radius: 14px;
-  border: none;
-  background: var(--surface);
-  color: var(--text);
-  font-weight: 700;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 0.9rem;
-}
-.nav-btn.primary {
-  background: var(--accent);
-  color: var(--accent-ink);
-  font-weight: 800;
 }
 
 /* ---- FAB ---- */
