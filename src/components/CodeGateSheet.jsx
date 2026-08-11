@@ -1,8 +1,8 @@
 import { useState } from "react";
 
-// First step of the add-word flow: the user must enter the access code before
-// the form is shown. `onVerify` returns true when the code is accepted.
-function CodeGateSheet({ onClose, onVerify }) {
+// Access-code gate shared by the add and delete flows. `title` describes the
+// pending action; `onVerify` returns true when the code is accepted.
+function CodeGateSheet({ title, onClose, onVerify }) {
   const [code, setCode] = useState("");
   const [error, setError] = useState(false);
 
@@ -21,7 +21,7 @@ function CodeGateSheet({ onClose, onVerify }) {
         onSubmit={handleSubmit}
       >
         <div className="sheet-handle" />
-        <h2 className="sheet-title">Please add the code to add the word</h2>
+        <h2 className="sheet-title">{title}</h2>
         <input
           type="text"
           className="sheet-input code-input"

@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import BrowseView from "./components/BrowseView";
 import PracticeView from "./components/PracticeView";
+import MenuDrawer from "./components/MenuDrawer";
 import CodeGateSheet from "./components/CodeGateSheet";
 import AddWordSheet from "./components/AddWordSheet";
-import { getWords, addWord } from "./data";
+import { getWords, addWord, deleteWord } from "./data";
 import { themeVars } from "./theme";
 import "./App.css";
 
@@ -17,10 +18,12 @@ const TABS = [
   { key: "practice", label: "Practice" },
 ];
 
-// Access code required before the add-word form is revealed.
+// Access code required before adding or deleting a word.
 const ACCESS_CODE = "123456";
 
 const EMPTY_WORD = { english: "", armenian: "", russian: "" };
+
+const labelOf = (list, key) => list.find((x) => x.key === key)?.label ?? "";
 
 function shuffleArray(arr) {
   const shuffled = [...arr];
@@ -44,6 +47,14 @@ const SunIcon = () => (
   </svg>
 );
 
+const MenuIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="3" y1="6" x2="21" y2="6" />
+    <line x1="3" y1="12" x2="21" y2="12" />
+    <line x1="3" y1="18" x2="21" y2="18" />
+  </svg>
+);
+
 function App() {
   const [theme, setTheme] = useState(
     () => localStorage.getItem("lexi-theme") || "dark",
@@ -56,8 +67,12 @@ function App() {
   const [visibility, setVisibility] = useState({});
   const [practiceIdx, setPracticeIdx] = useState(0);
   const [practiceFront, setPracticeFront] = useState(true);
-  // "closed" → "code" (access gate) → "form" (add word).
+  const [menuOpen, setMenuOpen] = useState(false);
+  // Add/delete both pass through the code gate:
+  // "closed" → "code" → ("form" for add | word removed for delete)
   const [gateStep, setGateStep] = useState("closed");
+  const [gateAction, setGateAction] = useState(null);
+  const [pendingDeleteId, setPendingDeleteId] = useState(null);
   const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
@@ -78,12 +93,14 @@ function App() {
   const handleProfileChange = (key) => {
     setProfile(key);
     localStorage.setItem("vocab-profile", key);
+    setMenuOpen(false);
   };
 
   const handleModeChange = (key) => {
     setMode(key);
     setPracticeIdx(0);
     setPracticeFront(true);
+    setMenuOpen(false);
   };
 
   const toggleField = useCallback((wordId, field) => {
@@ -120,11 +137,33 @@ function App() {
     }
   }, [words, profile]);
 
-  const openAdd = () => setGateStep("code");
-  const closeAdd = () => setGateStep("closed");
+  const openAdd = () => {
+    setGateAction("add");
+    setPendingDeleteId(null);
+    setGateStep("code");
+  };
 
+  const requestDelete = useCallback((id) => {
+    setGateAction("delete");
+    setPendingDeleteId(id);
+    setGateStep("code");
+  }, []);
+
+  const closeGate = () => {
+    setGateStep("closed");
+    setGateAction(null);
+    setPendingDeleteId(null);
+  };
+
+  // Returns true when the code is accepted so the sheet can show its error.
   const verifyCode = (code) => {
     if (code !== ACCESS_CODE) return false;
+    if (gateAction === "delete") {
+      deleteWord(profile, pendingDeleteId);
+      setWords(getWords(profile));
+      closeGate();
+      return true;
+    }
     setGateStep("form");
     return true;
   };
@@ -132,7 +171,7 @@ function App() {
   const handleAddWord = (fields) => {
     addWord(profile, fields);
     setWords(getWords(profile));
-    setGateStep("closed");
+    closeGate();
   };
 
   const practiceWord = words[practiceIdx] || EMPTY_WORD;
@@ -148,13 +187,18 @@ function App() {
   };
 
   const pageStyle = useMemo(() => themeVars(theme), [theme]);
+  const headerSubtitle = `${labelOf(PROFILES, profile)} · ${labelOf(TABS, mode)}`;
+  const codeTitle =
+    gateAction === "delete"
+      ? "Please add the code to delete the word"
+      : "Please add the code to add the word";
 
   return (
     <div className="app-page" style={pageStyle}>
       <div className="app-container">
         <header className="app-header">
           <div className="header-inner">
-            <div className="brand-row">
+            <div className="brand-col">
               <div className="brand">
                 <div className="brand-mark">
                   <span className="mark-a" />
@@ -162,38 +206,22 @@ function App() {
                 </div>
                 <div className="brand-name">Fluent</div>
               </div>
-              <button
-                className="theme-toggle"
-                onClick={toggleTheme}
-                aria-label="Toggle theme"
-              >
-                {theme === "dark" ? <MoonIcon /> : <SunIcon />}
-              </button>
+              <div className="header-subtitle">{headerSubtitle}</div>
             </div>
-
-            <div className="segment">
-              {PROFILES.map((p) => (
-                <button
-                  key={p.key}
-                  className={`segment-btn ${profile === p.key ? "active" : ""}`}
-                  onClick={() => handleProfileChange(p.key)}
-                >
-                  {p.label}
-                </button>
-              ))}
-            </div>
-
-            <div className="tabs">
-              {TABS.map((tb) => (
-                <button
-                  key={tb.key}
-                  className={`tab-btn ${mode === tb.key ? "active" : ""}`}
-                  onClick={() => handleModeChange(tb.key)}
-                >
-                  {tb.label}
-                </button>
-              ))}
-            </div>
+            <button
+              className="theme-toggle"
+              onClick={toggleTheme}
+              aria-label="Toggle theme"
+            >
+              {theme === "dark" ? <MoonIcon /> : <SunIcon />}
+            </button>
+            <button
+              className="menu-btn"
+              onClick={() => setMenuOpen(true)}
+              aria-label="Open menu"
+            >
+              <MenuIcon />
+            </button>
           </div>
         </header>
 
@@ -202,6 +230,7 @@ function App() {
             words={words}
             visibility={visibility}
             onToggle={toggleField}
+            onDelete={requestDelete}
             onRevealAll={revealAll}
             onHideAll={hideAll}
             onShuffle={shuffle}
@@ -224,12 +253,28 @@ function App() {
           +
         </button>
 
+        {menuOpen && (
+          <MenuDrawer
+            profiles={PROFILES}
+            profile={profile}
+            onSelectProfile={handleProfileChange}
+            tabs={TABS}
+            mode={mode}
+            onSelectMode={handleModeChange}
+            onClose={() => setMenuOpen(false)}
+          />
+        )}
+
         {gateStep === "code" && (
-          <CodeGateSheet onClose={closeAdd} onVerify={verifyCode} />
+          <CodeGateSheet
+            title={codeTitle}
+            onClose={closeGate}
+            onVerify={verifyCode}
+          />
         )}
 
         {gateStep === "form" && (
-          <AddWordSheet onClose={closeAdd} onAdd={handleAddWord} />
+          <AddWordSheet onClose={closeGate} onAdd={handleAddWord} />
         )}
       </div>
     </div>

@@ -19,9 +19,33 @@ const SpeakerIcon = () => (
   </svg>
 );
 
-// A single word card: number, English, pronounce button, then the Armenian and
-// Russian translations — all on one wrapping flex row (mobile redesign).
-const WordCardRow = memo(function WordCardRow({ word, index, vis, onToggle }) {
+const TrashIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <polyline points="3 6 5 6 21 6" />
+    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+    <path d="M10 11v6M14 11v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+  </svg>
+);
+
+// A single word card: number, English, pronounce button, the Armenian and
+// Russian translations, then a delete button — all on one wrapping flex row.
+const WordCardRow = memo(function WordCardRow({
+  word,
+  index,
+  vis,
+  onToggle,
+  onDelete,
+}) {
   return (
     <div className="word-card">
       <div className="card-index">{index}</div>
@@ -50,6 +74,13 @@ const WordCardRow = memo(function WordCardRow({ word, index, vis, onToggle }) {
       >
         {vis.russian ? word.russian : "Russian"}
       </div>
+      <button
+        className="delete-btn"
+        onClick={() => onDelete(word.id)}
+        aria-label={`Delete ${word.english}`}
+      >
+        <TrashIcon />
+      </button>
     </div>
   );
 });

@@ -4,6 +4,7 @@ function BrowseView({
   words,
   visibility,
   onToggle,
+  onDelete,
   onRevealAll,
   onHideAll,
   onShuffle,
@@ -37,6 +38,7 @@ function BrowseView({
             index={i + 1}
             vis={visibility[word.id] || {}}
             onToggle={onToggle}
+            onDelete={onDelete}
           />
         ))}
       </div>
