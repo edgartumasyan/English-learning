@@ -6,9 +6,9 @@ function CodeGateSheet({ title, onClose, onVerify }) {
   const [code, setCode] = useState("");
   const [error, setError] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!onVerify(code.trim())) {
+    if (!(await onVerify(code.trim()))) {
       setError(true);
     }
   };

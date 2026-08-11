@@ -5,6 +5,7 @@ import MenuDrawer from "./components/MenuDrawer";
 import CodeGateSheet from "./components/CodeGateSheet";
 import AddWordSheet from "./components/AddWordSheet";
 import { getWords, addWord, deleteWord } from "./data";
+import { verifyAccessCode } from "./accessCode";
 import { themeVars } from "./theme";
 import "./App.css";
 
@@ -17,9 +18,6 @@ const TABS = [
   { key: "browse", label: "Browse" },
   { key: "practice", label: "Practice" },
 ];
-
-// Access code required before adding or deleting a word.
-const ACCESS_CODE = "123456";
 
 const EMPTY_WORD = { english: "", armenian: "", russian: "" };
 
@@ -155,9 +153,9 @@ function App() {
     setPendingDeleteId(null);
   };
 
-  // Returns true when the code is accepted so the sheet can show its error.
-  const verifyCode = (code) => {
-    if (code !== ACCESS_CODE) return false;
+  // Resolves to true when the code is accepted so the sheet can show its error.
+  const verifyCode = async (code) => {
+    if (!(await verifyAccessCode(code))) return false;
     if (gateAction === "delete") {
       deleteWord(profile, pendingDeleteId);
       setWords(getWords(profile));
