@@ -62,7 +62,7 @@ function App() {
     () => localStorage.getItem("vocab-profile") || "my",
   );
   const [words, setWords] = useState([]);
-  const [mode, setMode] = useState("browse");
+  const [mode, setMode] = useState("home");
   const [visibility, setVisibility] = useState({});
   const [practiceIdx, setPracticeIdx] = useState(0);
   const [practiceFront, setPracticeFront] = useState(true);
@@ -71,9 +71,10 @@ function App() {
   const [practiceShuffle, setPracticeShuffle] = useState(false);
   const [shuffleOrder, setShuffleOrder] = useState(null);
   const [hideWord, setHideWord] = useState(false);
-  // Tracks whether the Browse list has been shuffled out of its canonical order,
-  // so the toolbar can offer a "Reset Order" action to restore it.
-  const [browseShuffled, setBrowseShuffled] = useState(false);
+  // Browse shuffle is non-destructive: `browseOrder` is a shuffled index map
+  // over `words`, applied only for display, so "Reset Order" just clears it.
+  const [browseShuffle, setBrowseShuffle] = useState(false);
+  const [browseOrder, setBrowseOrder] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
   // Add/delete both pass through the code gate:
   // "closed" → "code" → ("form" for add | word removed for delete)
@@ -89,7 +90,8 @@ function App() {
     setPracticeFront(true);
     setPracticeShuffle(false);
     setShuffleOrder(null);
-    setBrowseShuffled(false);
+    setBrowseShuffle(false);
+    setBrowseOrder(null);
   }, [profile]);
 
   const toggleTheme = useCallback(() => {
@@ -134,19 +136,40 @@ function App() {
 
   const hideAll = useCallback(() => setVisibility({}), []);
 
-  const shuffle = useCallback(() => {
-    setWords((prev) => shuffleArray(prev));
-    setVisibility({});
-    setBrowseShuffled(true);
-  }, []);
+  // Every translation (and English) revealed across the whole list — drives the
+  // combined Show All / Hide All toggle.
+  const allShown = useMemo(
+    () =>
+      words.length > 0 &&
+      words.every((w) => {
+        const v = visibility[w.id];
+        return v && v.english && v.russian && v.armenian;
+      }),
+    [words, visibility],
+  );
 
-  // Restores the canonical order (bundled words then locally-added, minus
-  // deleted) that getWords returns for the active profile.
-  const resetOrder = useCallback(() => {
-    setWords(getWords(profile));
-    setVisibility({});
-    setBrowseShuffled(false);
-  }, [profile]);
+  const toggleShowAll = useCallback(() => {
+    if (allShown) hideAll();
+    else revealAll();
+  }, [allShown, hideAll, revealAll]);
+
+  // Shuffle ⇄ Reset Order: toggling on builds a shuffled index map; toggling off
+  // clears it, restoring the canonical order without mutating `words`.
+  const toggleBrowseShuffle = useCallback(() => {
+    setBrowseShuffle((on) => {
+      setBrowseOrder(on ? null : shuffleArray(words.map((_, i) => i)));
+      return !on;
+    });
+  }, [words]);
+
+  // The list as Browse displays it: canonical, or reordered while shuffled. Falls
+  // back to canonical if the word set changed (add/delete) since shuffling.
+  const browseWords = useMemo(() => {
+    if (browseShuffle && browseOrder && browseOrder.length === words.length) {
+      return browseOrder.map((i) => words[i]);
+    }
+    return words;
+  }, [browseShuffle, browseOrder, words]);
 
   const handleDownloadPdf = useCallback(async () => {
     setIsExporting(true);
@@ -283,15 +306,15 @@ function App() {
           />
         ) : mode === "browse" ? (
           <BrowseView
-            words={words}
+            words={browseWords}
+            count={words.length}
             visibility={visibility}
             onToggle={toggleField}
             onDelete={requestDelete}
-            onRevealAll={revealAll}
-            onHideAll={hideAll}
-            onShuffle={shuffle}
-            shuffled={browseShuffled}
-            onResetOrder={resetOrder}
+            allShown={allShown}
+            onToggleShowAll={toggleShowAll}
+            shuffled={browseShuffle}
+            onToggleShuffle={toggleBrowseShuffle}
             onDownloadPdf={handleDownloadPdf}
             pdfLabel={isExporting ? "Generating…" : "PDF"}
           />

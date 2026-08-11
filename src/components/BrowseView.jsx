@@ -2,36 +2,34 @@ import WordCardRow from "./WordCardRow";
 
 function BrowseView({
   words,
+  count,
   visibility,
   onToggle,
   onDelete,
-  onRevealAll,
-  onHideAll,
-  onShuffle,
+  allShown,
+  onToggleShowAll,
   shuffled,
-  onResetOrder,
+  onToggleShuffle,
   onDownloadPdf,
   pdfLabel,
 }) {
   return (
     <div className="browse">
       <div className="browse-actions">
-        <div className="word-count">{words.length} words</div>
+        <div className="word-count">{count} words</div>
         <div className="action-row">
-          <button className="action-btn accent" onClick={onRevealAll}>
-            Show All
+          <button
+            className={`action-btn ${allShown ? "" : "accent"}`}
+            onClick={onToggleShowAll}
+          >
+            {allShown ? "Hide All" : "Show All"}
           </button>
-          <button className="action-btn" onClick={onHideAll}>
-            Hide All
+          <button
+            className={`action-btn ${shuffled ? "" : "accent2"}`}
+            onClick={onToggleShuffle}
+          >
+            {shuffled ? "Reset Order" : "Shuffle"}
           </button>
-          <button className="action-btn accent2" onClick={onShuffle}>
-            Shuffle
-          </button>
-          {shuffled && (
-            <button className="action-btn" onClick={onResetOrder}>
-              Reset Order
-            </button>
-          )}
           <button className="action-btn push" onClick={onDownloadPdf}>
             {pdfLabel}
           </button>
