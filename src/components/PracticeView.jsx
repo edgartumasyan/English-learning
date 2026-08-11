@@ -18,6 +18,22 @@ const SpeakerIcon = () => (
   </svg>
 );
 
+function Toggle({ label, on, onClick }) {
+  return (
+    <button
+      type="button"
+      className="practice-toggle"
+      onClick={onClick}
+      aria-pressed={on}
+    >
+      <span>{label}</span>
+      <span className={`switch ${on ? "on" : ""}`}>
+        <span className="knob" />
+      </span>
+    </button>
+  );
+}
+
 function PracticeView({
   word,
   index,
@@ -26,11 +42,21 @@ function PracticeView({
   onFlip,
   onPrev,
   onNext,
+  shuffle,
+  onToggleShuffle,
+  hideWord,
+  onToggleHideWord,
 }) {
   return (
     <div className="practice">
-      <div className="practice-count">
-        Card {total ? index + 1 : 0} of {total}
+      <div className="practice-controls">
+        <div className="practice-count">
+          Card {total ? index + 1 : 0} of {total}
+        </div>
+        <div className="practice-toggles">
+          <Toggle label="Shuffle" on={shuffle} onClick={onToggleShuffle} />
+          <Toggle label="Hide word" on={hideWord} onClick={onToggleHideWord} />
+        </div>
       </div>
 
       <div
@@ -39,12 +65,20 @@ function PracticeView({
         onClick={onFlip}
       >
         {showFront ? (
-          <>
-            <div className="flash-word">{word.english}</div>
-            <div className="flash-hint">Tap to reveal</div>
-          </>
+          hideWord ? (
+            <>
+              <div className="flash-word masked">? ? ? ? ?</div>
+              <div className="flash-hint">Tap to reveal translation</div>
+            </>
+          ) : (
+            <>
+              <div className="flash-word">{word.english}</div>
+              <div className="flash-hint">Tap to reveal</div>
+            </>
+          )
         ) : (
           <div className="flash-back">
+            {hideWord && <div className="flash-back-word">{word.english}</div>}
             <div className="reveal-chip chip-a">{word.armenian}</div>
             <div className="reveal-chip chip-r">{word.russian}</div>
           </div>
