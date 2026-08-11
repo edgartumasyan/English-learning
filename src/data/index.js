@@ -9,6 +9,7 @@ const SOURCES = {
 
 const addedKey = (source) => `vocab-added-${source}`;
 const deletedKey = (source) => `vocab-deleted-${source}`;
+const wrongKey = (source) => `vocab-wrong-${source}`;
 
 function loadList(key) {
   try {
@@ -61,4 +62,25 @@ export function deleteWord(source, id) {
   if (!deleted.includes(id)) {
     localStorage.setItem(deletedKey(source), JSON.stringify([...deleted, id]));
   }
+}
+
+// The set of word ids the user has flagged "wrong" for a source, persisted so a
+// review list survives reloads. Kept per-source, like added/deleted.
+export function getWrongIds(source) {
+  return loadList(wrongKey(source));
+}
+
+// Adds or removes a word id from the source's wrong list and returns the result.
+export function toggleWrong(source, id) {
+  const list = loadList(wrongKey(source));
+  const next = list.includes(id)
+    ? list.filter((x) => x !== id)
+    : [...list, id];
+  localStorage.setItem(wrongKey(source), JSON.stringify(next));
+  return next;
+}
+
+// Empties the source's wrong list.
+export function clearWrong(source) {
+  localStorage.setItem(wrongKey(source), JSON.stringify([]));
 }

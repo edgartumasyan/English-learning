@@ -46,58 +46,94 @@ function PracticeView({
   onToggleShuffle,
   hideWord,
   onToggleHideWord,
+  reviewOnly,
+  onToggleReviewOnly,
+  wrongCount,
+  onClearWrong,
+  isCurrentWrong,
+  onToggleCurrentWrong,
 }) {
   return (
     <div className="practice">
       <div className="practice-controls">
-        <div className="practice-count">
-          Card {total ? index + 1 : 0} of {total}
+        <div className="practice-controls-top">
+          <div className="practice-count">
+            Card {total ? index + 1 : 0} of {total}
+          </div>
+          {wrongCount > 0 && (
+            <button className="clear-wrong-btn" onClick={onClearWrong}>
+              Clear wrong list ({wrongCount})
+            </button>
+          )}
         </div>
         <div className="practice-toggles">
           <Toggle label="Shuffle" on={shuffle} onClick={onToggleShuffle} />
           <Toggle label="Hide word" on={hideWord} onClick={onToggleHideWord} />
+          <Toggle
+            label={`Wrong only (${wrongCount})`}
+            on={reviewOnly}
+            onClick={onToggleReviewOnly}
+          />
         </div>
       </div>
 
-      <div
-        key={`${index}-${showFront}`}
-        className="flashcard"
-        onClick={onFlip}
-      >
-        {showFront ? (
-          hideWord ? (
-            <>
-              <div className="flash-word masked">? ? ? ? ?</div>
-              <div className="flash-hint">Tap to reveal translation</div>
-            </>
-          ) : (
-            <>
-              <div className="flash-word">{word.english}</div>
-              <div className="flash-hint">Tap to reveal</div>
-            </>
-          )
-        ) : (
-          <div className="flash-back">
-            {hideWord && <div className="flash-back-word">{word.english}</div>}
-            <div className="reveal-chip chip-a">{word.armenian}</div>
-            <div className="reveal-chip chip-r">{word.russian}</div>
+      {total === 0 ? (
+        <div className="practice-empty">
+          No wrong words yet. Mark a word wrong while practicing to add it here.
+        </div>
+      ) : (
+        <>
+          <div key={`${index}-${showFront}`} className="flashcard" onClick={onFlip}>
+            {showFront ? (
+              hideWord ? (
+                <>
+                  <div className="flash-word masked">? ? ? ? ?</div>
+                  <div className="flash-hint">Tap to reveal translation</div>
+                </>
+              ) : (
+                <>
+                  <div className="flash-word">{word.english}</div>
+                  <div className="flash-hint">Tap to reveal</div>
+                </>
+              )
+            ) : (
+              <div className="flash-back">
+                {hideWord && (
+                  <div className="flash-back-word">{word.english}</div>
+                )}
+                <div className="reveal-chip chip-a">{word.armenian}</div>
+                <div className="reveal-chip chip-r">{word.russian}</div>
+              </div>
+            )}
           </div>
-        )}
-      </div>
 
-      <button className="listen-btn" onClick={() => speakWord(word.english)}>
-        <SpeakerIcon />
-        Listen
-      </button>
+          <div className="practice-actions">
+            <button
+              className="listen-btn"
+              onClick={() => speakWord(word.english)}
+            >
+              <SpeakerIcon />
+              Listen
+            </button>
+            <button
+              className={isCurrentWrong ? "mark-wrong-btn on" : "mark-wrong-btn"}
+              onClick={onToggleCurrentWrong}
+              aria-pressed={isCurrentWrong}
+            >
+              {isCurrentWrong ? "Marked Wrong" : "Mark Wrong"}
+            </button>
+          </div>
 
-      <div className="practice-nav">
-        <button className="nav-btn" onClick={onPrev}>
-          Back
-        </button>
-        <button className="nav-btn primary" onClick={onNext}>
-          Next
-        </button>
-      </div>
+          <div className="practice-nav">
+            <button className="nav-btn" onClick={onPrev}>
+              Back
+            </button>
+            <button className="nav-btn primary" onClick={onNext}>
+              Next
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 }
