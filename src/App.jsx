@@ -5,7 +5,14 @@ import PracticeView from "./components/PracticeView";
 import MenuDrawer from "./components/MenuDrawer";
 import CodeGateSheet from "./components/CodeGateSheet";
 import AddWordSheet from "./components/AddWordSheet";
-import { getWords, addWord, deleteWord } from "./data";
+import {
+  getWords,
+  addWord,
+  deleteWord,
+  getWrongIds,
+  toggleWrong,
+  clearWrong,
+} from "./data";
 import { verifyAccessCode } from "./accessCode";
 import { themeVars } from "./theme";
 import "./App.css";
@@ -75,6 +82,10 @@ function App() {
   // over `words`, applied only for display, so "Reset Order" just clears it.
   const [browseShuffle, setBrowseShuffle] = useState(false);
   const [browseOrder, setBrowseOrder] = useState(null);
+  // Ids the user flagged "wrong" for the active profile, plus a Practice filter
+  // that narrows the deck to just those words.
+  const [wrongIds, setWrongIds] = useState([]);
+  const [reviewOnly, setReviewOnly] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   // Add/delete both pass through the code gate:
   // "closed" → "code" → ("form" for add | word removed for delete)
@@ -92,6 +103,8 @@ function App() {
     setShuffleOrder(null);
     setBrowseShuffle(false);
     setBrowseOrder(null);
+    setWrongIds(getWrongIds(profile));
+    setReviewOnly(false);
   }, [profile]);
 
   const toggleTheme = useCallback(() => {
@@ -218,6 +231,37 @@ function App() {
     closeGate();
   };
 
+  const toggleWordWrong = useCallback(
+    (id) => setWrongIds(toggleWrong(profile, id)),
+    [profile],
+  );
+
+  const clearWrongList = useCallback(() => {
+    clearWrong(profile);
+    setWrongIds([]);
+    setReviewOnly(false);
+    setPracticeIdx(0);
+    setPracticeFront(true);
+    setPracticeShuffle(false);
+    setShuffleOrder(null);
+  }, [profile]);
+
+  const toggleReviewOnly = () => {
+    setReviewOnly((r) => !r);
+    setPracticeIdx(0);
+    setPracticeFront(true);
+    setPracticeShuffle(false);
+    setShuffleOrder(null);
+  };
+
+  // The deck Practice steps through: the whole list, or only flagged words when
+  // "Wrong only" is on.
+  const practiceWords = useMemo(
+    () =>
+      reviewOnly ? words.filter((w) => wrongIds.includes(w.id)) : words,
+    [reviewOnly, words, wrongIds],
+  );
+
   const togglePracticeShuffle = () => {
     setPracticeFront(true);
     setPracticeIdx(0);
@@ -226,7 +270,7 @@ function App() {
       setShuffleOrder(null);
       return;
     }
-    const order = shuffleArray(words.map((_, i) => i));
+    const order = shuffleArray(practiceWords.map((_, i) => i));
     setPracticeShuffle(true);
     setShuffleOrder(order);
   };
@@ -234,21 +278,27 @@ function App() {
   const toggleHideWord = () => setHideWord((h) => !h);
 
   // With shuffle on, practiceIdx walks the shuffled order; otherwise it indexes
-  // words directly.
+  // the practice deck directly.
   const practiceWordIdx =
     practiceShuffle && shuffleOrder && shuffleOrder[practiceIdx] !== undefined
       ? shuffleOrder[practiceIdx]
       : practiceIdx;
-  const practiceWord = words[practiceWordIdx] || EMPTY_WORD;
+  const practiceWord = practiceWords[practiceWordIdx] || EMPTY_WORD;
+  const practiceCount = practiceWords.length;
   const practiceNext = () => {
-    setPracticeIdx((i) => (words.length ? (i + 1) % words.length : 0));
+    setPracticeIdx((i) => (practiceCount ? (i + 1) % practiceCount : 0));
     setPracticeFront(true);
   };
   const practicePrev = () => {
     setPracticeIdx((i) =>
-      words.length ? (i - 1 + words.length) % words.length : 0,
+      practiceCount ? (i - 1 + practiceCount) % practiceCount : 0,
     );
     setPracticeFront(true);
+  };
+  const isCurrentWrong =
+    practiceWord.id !== undefined && wrongIds.includes(practiceWord.id);
+  const toggleCurrentWrong = () => {
+    if (practiceWord.id !== undefined) toggleWordWrong(practiceWord.id);
   };
 
   const pageStyle = useMemo(() => themeVars(theme), [theme]);
@@ -311,6 +361,8 @@ function App() {
             visibility={visibility}
             onToggle={toggleField}
             onDelete={requestDelete}
+            wrongIds={wrongIds}
+            onToggleWrong={toggleWordWrong}
             allShown={allShown}
             onToggleShowAll={toggleShowAll}
             shuffled={browseShuffle}
@@ -322,7 +374,7 @@ function App() {
           <PracticeView
             word={practiceWord}
             index={practiceIdx}
-            total={words.length}
+            total={practiceCount}
             showFront={practiceFront}
             onFlip={() => setPracticeFront((f) => !f)}
             onPrev={practicePrev}
@@ -331,6 +383,12 @@ function App() {
             onToggleShuffle={togglePracticeShuffle}
             hideWord={hideWord}
             onToggleHideWord={toggleHideWord}
+            reviewOnly={reviewOnly}
+            onToggleReviewOnly={toggleReviewOnly}
+            wrongCount={wrongIds.length}
+            onClearWrong={clearWrongList}
+            isCurrentWrong={isCurrentWrong}
+            onToggleCurrentWrong={toggleCurrentWrong}
           />
         )}
 

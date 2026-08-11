@@ -6,6 +6,8 @@ function BrowseView({
   visibility,
   onToggle,
   onDelete,
+  wrongIds,
+  onToggleWrong,
   allShown,
   onToggleShowAll,
   shuffled,
@@ -44,6 +46,8 @@ function BrowseView({
             vis={visibility[word.id] || {}}
             onToggle={onToggle}
             onDelete={onDelete}
+            isWrong={wrongIds.includes(word.id)}
+            onToggleWrong={onToggleWrong}
           />
         ))}
       </div>
