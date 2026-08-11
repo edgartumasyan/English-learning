@@ -8,6 +8,8 @@ function BrowseView({
   onRevealAll,
   onHideAll,
   onShuffle,
+  shuffled,
+  onResetOrder,
   onDownloadPdf,
   pdfLabel,
 }) {
@@ -25,6 +27,11 @@ function BrowseView({
           <button className="action-btn accent2" onClick={onShuffle}>
             Shuffle
           </button>
+          {shuffled && (
+            <button className="action-btn" onClick={onResetOrder}>
+              Reset Order
+            </button>
+          )}
           <button className="action-btn push" onClick={onDownloadPdf}>
             {pdfLabel}
           </button>
