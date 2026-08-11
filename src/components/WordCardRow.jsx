@@ -37,8 +37,8 @@ const TrashIcon = () => (
   </svg>
 );
 
-// A single word card: number, English, pronounce button, the Armenian and
-// Russian translations, then a delete button — all on one wrapping flex row.
+// A word card, stacked in two rows: the top row holds the number, English and
+// the pronounce button; the bottom row holds the two translations and delete.
 const WordCardRow = memo(function WordCardRow({
   word,
   index,
@@ -48,39 +48,43 @@ const WordCardRow = memo(function WordCardRow({
 }) {
   return (
     <div className="word-card">
-      <div className="card-index">{index}</div>
-      <div
-        className={vis.english ? "card-english shown" : "card-english hidden"}
-        onClick={() => onToggle(word.id, "english")}
-      >
-        {vis.english ? word.english : "Tap to reveal"}
+      <div className="card-top">
+        <div className="card-index">{index}</div>
+        <div
+          className={vis.english ? "card-english shown" : "card-english hidden"}
+          onClick={() => onToggle(word.id, "english")}
+        >
+          {vis.english ? word.english : "Tap to reveal"}
+        </div>
+        <button
+          className="speak-btn"
+          onClick={() => speakWord(word.english)}
+          aria-label={`Pronounce ${word.english}`}
+        >
+          <SpeakerIcon />
+        </button>
       </div>
-      <button
-        className="speak-btn"
-        onClick={() => speakWord(word.english)}
-        aria-label={`Pronounce ${word.english}`}
-      >
-        <SpeakerIcon />
-      </button>
-      <div
-        className={vis.armenian ? "chip chip-a shown" : "chip hidden"}
-        onClick={() => onToggle(word.id, "armenian")}
-      >
-        {vis.armenian ? word.armenian : "Armenian"}
+      <div className="card-trans">
+        <div
+          className={vis.armenian ? "chip chip-a shown" : "chip hidden"}
+          onClick={() => onToggle(word.id, "armenian")}
+        >
+          {vis.armenian ? word.armenian : "Armenian"}
+        </div>
+        <div
+          className={vis.russian ? "chip chip-r shown" : "chip hidden"}
+          onClick={() => onToggle(word.id, "russian")}
+        >
+          {vis.russian ? word.russian : "Russian"}
+        </div>
+        <button
+          className="delete-btn"
+          onClick={() => onDelete(word.id)}
+          aria-label={`Delete ${word.english}`}
+        >
+          <TrashIcon />
+        </button>
       </div>
-      <div
-        className={vis.russian ? "chip chip-r shown" : "chip hidden"}
-        onClick={() => onToggle(word.id, "russian")}
-      >
-        {vis.russian ? word.russian : "Russian"}
-      </div>
-      <button
-        className="delete-btn"
-        onClick={() => onDelete(word.id)}
-        aria-label={`Delete ${word.english}`}
-      >
-        <TrashIcon />
-      </button>
     </div>
   );
 });

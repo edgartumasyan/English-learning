@@ -65,6 +65,11 @@ function App() {
   const [visibility, setVisibility] = useState({});
   const [practiceIdx, setPracticeIdx] = useState(0);
   const [practiceFront, setPracticeFront] = useState(true);
+  // Practice options: an optional shuffled order over the words, and hiding the
+  // English word on the card front.
+  const [practiceShuffle, setPracticeShuffle] = useState(false);
+  const [shuffleOrder, setShuffleOrder] = useState(null);
+  const [hideWord, setHideWord] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   // Add/delete both pass through the code gate:
   // "closed" → "code" → ("form" for add | word removed for delete)
@@ -78,6 +83,8 @@ function App() {
     setVisibility({});
     setPracticeIdx(0);
     setPracticeFront(true);
+    setPracticeShuffle(false);
+    setShuffleOrder(null);
   }, [profile]);
 
   const toggleTheme = useCallback(() => {
@@ -172,7 +179,28 @@ function App() {
     closeGate();
   };
 
-  const practiceWord = words[practiceIdx] || EMPTY_WORD;
+  const togglePracticeShuffle = () => {
+    setPracticeFront(true);
+    setPracticeIdx(0);
+    if (practiceShuffle) {
+      setPracticeShuffle(false);
+      setShuffleOrder(null);
+      return;
+    }
+    const order = shuffleArray(words.map((_, i) => i));
+    setPracticeShuffle(true);
+    setShuffleOrder(order);
+  };
+
+  const toggleHideWord = () => setHideWord((h) => !h);
+
+  // With shuffle on, practiceIdx walks the shuffled order; otherwise it indexes
+  // words directly.
+  const practiceWordIdx =
+    practiceShuffle && shuffleOrder && shuffleOrder[practiceIdx] !== undefined
+      ? shuffleOrder[practiceIdx]
+      : practiceIdx;
+  const practiceWord = words[practiceWordIdx] || EMPTY_WORD;
   const practiceNext = () => {
     setPracticeIdx((i) => (words.length ? (i + 1) % words.length : 0));
     setPracticeFront(true);
@@ -244,6 +272,10 @@ function App() {
             onFlip={() => setPracticeFront((f) => !f)}
             onPrev={practicePrev}
             onNext={practiceNext}
+            shuffle={practiceShuffle}
+            onToggleShuffle={togglePracticeShuffle}
+            hideWord={hideWord}
+            onToggleHideWord={toggleHideWord}
           />
         )}
 
