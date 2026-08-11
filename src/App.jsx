@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
+import HomeView from "./components/HomeView";
 import BrowseView from "./components/BrowseView";
 import PracticeView from "./components/PracticeView";
 import MenuDrawer from "./components/MenuDrawer";
@@ -108,6 +109,8 @@ function App() {
     setMenuOpen(false);
   };
 
+  const goHome = () => handleModeChange("home");
+
   const toggleField = useCallback((wordId, field) => {
     setVisibility((prev) => {
       const current = prev[wordId] || {};
@@ -213,7 +216,9 @@ function App() {
   };
 
   const pageStyle = useMemo(() => themeVars(theme), [theme]);
-  const headerSubtitle = `${labelOf(PROFILES, profile)} · ${labelOf(TABS, mode)}`;
+  const profileLabel = labelOf(PROFILES, profile);
+  const modeLabel = mode === "home" ? "Home" : labelOf(TABS, mode);
+  const headerSubtitle = `${profileLabel} · ${modeLabel}`;
   const codeTitle =
     gateAction === "delete"
       ? "Please add the code to delete the word"
@@ -224,7 +229,12 @@ function App() {
       <div className="app-container">
         <header className="app-header">
           <div className="header-inner">
-            <div className="brand-col">
+            <button
+              type="button"
+              className="brand-col"
+              onClick={goHome}
+              aria-label="Go to home"
+            >
               <div className="brand">
                 <div className="brand-mark">
                   <span className="mark-a" />
@@ -233,7 +243,7 @@ function App() {
                 <div className="brand-name">Fluent</div>
               </div>
               <div className="header-subtitle">{headerSubtitle}</div>
-            </div>
+            </button>
             <button
               className="theme-toggle"
               onClick={toggleTheme}
@@ -251,7 +261,14 @@ function App() {
           </div>
         </header>
 
-        {mode === "browse" ? (
+        {mode === "home" ? (
+          <HomeView
+            wordCount={words.length}
+            profileLabel={profileLabel}
+            onPractice={() => handleModeChange("practice")}
+            onBrowse={() => handleModeChange("browse")}
+          />
+        ) : mode === "browse" ? (
           <BrowseView
             words={words}
             visibility={visibility}
