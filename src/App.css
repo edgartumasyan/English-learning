@@ -78,6 +78,13 @@
   flex-direction: column;
   flex: 1;
   min-width: 0;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
 }
 
 .brand {
@@ -284,6 +291,88 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+}
+
+/* ---- Home ---- */
+.home {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  padding: 32px 24px;
+  text-align: center;
+}
+
+.home-logo {
+  width: 64px;
+  height: 64px;
+  position: relative;
+}
+.home-logo span {
+  position: absolute;
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+}
+.home-logo .mark-a {
+  top: 2px;
+  left: 0;
+  background: var(--accent2);
+  transform: rotate(-12deg);
+}
+.home-logo .mark-b {
+  bottom: 2px;
+  right: 0;
+  background: var(--accent);
+  transform: rotate(12deg);
+}
+
+.home-title {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.home-subtitle {
+  font-size: 0.95rem;
+  color: var(--muted);
+  margin-top: 8px;
+  max-width: 320px;
+}
+
+.home-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 280px;
+  margin-top: 8px;
+}
+
+.home-btn {
+  padding: 15px;
+  border-radius: 14px;
+  border: none;
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+.home-btn.primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 800;
+}
+
+.home-footer {
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-weight: 600;
 }
 
 /* ---- Browse ---- */
