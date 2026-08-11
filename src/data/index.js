@@ -7,32 +7,58 @@ const SOURCES = {
   caroline: carolineWords,
 };
 
-const storageKey = (source) => `vocab-added-${source}`;
+const addedKey = (source) => `vocab-added-${source}`;
+const deletedKey = (source) => `vocab-deleted-${source}`;
 
-function loadAdded(source) {
+function loadList(key) {
   try {
-    return JSON.parse(localStorage.getItem(storageKey(source))) || [];
+    return JSON.parse(localStorage.getItem(key)) || [];
   } catch {
     return [];
   }
 }
 
-// Returns the bundled words plus any words the user added locally.
+const loadAdded = (source) => loadList(addedKey(source));
+const loadDeleted = (source) => loadList(deletedKey(source));
+
+// Returns the bundled words plus any words the user added locally, minus any the
+// user has deleted (bundled deletions are tracked as a list of ids).
 export function getWords(source) {
   const base = SOURCES[source] || SOURCES.my;
-  return [...base, ...loadAdded(source)];
+  const deleted = new Set(loadDeleted(source));
+  return [...base, ...loadAdded(source)].filter((w) => !deleted.has(w.id));
 }
 
-// Persists a new word in localStorage and returns the created record.
+// Persists a new word in localStorage and returns the created record. The id is
+// derived from every known word (bundled + added) so it never collides with a
+// deleted bundled id.
 export function addWord(source, { english, russian, armenian }) {
-  const all = getWords(source);
+  const base = SOURCES[source] || SOURCES.my;
+  const added = loadAdded(source);
+  const maxId = [...base, ...added].reduce((m, w) => Math.max(m, w.id), 0);
   const newWord = {
-    id: all.length ? Math.max(...all.map((w) => w.id)) + 1 : 1,
+    id: maxId + 1,
     english: english.trim(),
     russian: russian.trim(),
     armenian: armenian.trim(),
   };
-  const added = [...loadAdded(source), newWord];
-  localStorage.setItem(storageKey(source), JSON.stringify(added));
+  localStorage.setItem(addedKey(source), JSON.stringify([...added, newWord]));
   return newWord;
+}
+
+// Removes a word. Locally-added words are dropped from the added list; bundled
+// words (which can't be edited on disk) are recorded in the deleted list.
+export function deleteWord(source, id) {
+  const added = loadAdded(source);
+  if (added.some((w) => w.id === id)) {
+    localStorage.setItem(
+      addedKey(source),
+      JSON.stringify(added.filter((w) => w.id !== id)),
+    );
+    return;
+  }
+  const deleted = loadDeleted(source);
+  if (!deleted.includes(id)) {
+    localStorage.setItem(deletedKey(source), JSON.stringify([...deleted, id]));
+  }
 }
