@@ -1,5 +1,5 @@
 const SALT = "fluent-v1";
-const ACCESS_CODE_HASH = "09e1846f188c3f54f610e00056182bbd9c0792a3ffb27276a95ccb663010c3b8";
+const ACCESS_CODE_HASH = "2133f95bca6522312b9c21ad22d2f2557b4c0b0ea3fbe96ca2d30fc30bbb5af0";
 
 async function sha256Hex(text) {
   const bytes = new TextEncoder().encode(text);
