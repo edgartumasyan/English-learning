@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { speakWord } from "../speak";
 
 const SpeakerIcon = () => (
@@ -18,6 +19,38 @@ const SpeakerIcon = () => (
   </svg>
 );
 
+const ChevronLeftIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <polyline points="15 18 9 12 15 6" />
+  </svg>
+);
+
+const ChevronRightIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <polyline points="9 18 15 12 9 6" />
+  </svg>
+);
+
 function Toggle({ label, on, onClick }) {
   return (
     <button
@@ -33,6 +66,9 @@ function Toggle({ label, on, onClick }) {
     </button>
   );
 }
+
+// Minimum horizontal travel (px) before a touch counts as a swipe rather than a tap.
+const SWIPE_THRESHOLD = 50;
 
 function PracticeView({
   word,
@@ -53,6 +89,30 @@ function PracticeView({
   isCurrentWrong,
   onToggleCurrentWrong,
 }) {
+  const touchStartX = useRef(null);
+
+  const onTouchStart = (e) => {
+    touchStartX.current = e.changedTouches[0].clientX;
+  };
+  const onTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    touchStartX.current = null;
+    if (Math.abs(dx) < SWIPE_THRESHOLD) return;
+    if (dx < 0) onNext();
+    else onPrev();
+  };
+
+  // Arrow taps navigate without flipping the card underneath them.
+  const handlePrev = (e) => {
+    e.stopPropagation();
+    onPrev();
+  };
+  const handleNext = (e) => {
+    e.stopPropagation();
+    onNext();
+  };
+
   return (
     <div className="practice">
       <div className="practice-controls">
@@ -83,53 +143,66 @@ function PracticeView({
         </div>
       ) : (
         <>
-          <div key={`${index}-${showFront}`} className="flashcard" onClick={onFlip}>
-            {showFront ? (
-              hideWord ? (
-                <>
-                  <div className="flash-word masked">? ? ? ? ?</div>
-                  <div className="flash-hint">Tap to reveal translation</div>
-                </>
+          <div className="practice-card-wrap">
+            <div
+              key={`${index}-${showFront}`}
+              className="flashcard"
+              onClick={onFlip}
+              onTouchStart={onTouchStart}
+              onTouchEnd={onTouchEnd}
+            >
+              {showFront ? (
+                hideWord ? (
+                  <>
+                    <div className="flash-word masked">? ? ? ? ?</div>
+                    <div className="flash-hint">Tap to reveal translation</div>
+                  </>
+                ) : (
+                  <>
+                    <div className="flash-word">{word.english}</div>
+                    <div className="flash-hint">Tap to reveal</div>
+                  </>
+                )
               ) : (
-                <>
-                  <div className="flash-word">{word.english}</div>
-                  <div className="flash-hint">Tap to reveal</div>
-                </>
-              )
-            ) : (
-              <div className="flash-back">
-                {hideWord && (
-                  <div className="flash-back-word">{word.english}</div>
-                )}
-                <div className="reveal-chip chip-a">{word.armenian}</div>
-                <div className="reveal-chip chip-r">{word.russian}</div>
-              </div>
-            )}
+                <div className="flash-back">
+                  {hideWord && (
+                    <div className="flash-back-word">{word.english}</div>
+                  )}
+                  <div className="reveal-chip chip-a">{word.armenian}</div>
+                  <div className="reveal-chip chip-r">{word.russian}</div>
+                </div>
+              )}
+            </div>
+            <button
+              className="card-nav-btn prev"
+              onClick={handlePrev}
+              aria-label="Previous word"
+            >
+              <ChevronLeftIcon />
+            </button>
+            <button
+              className="card-nav-btn next"
+              onClick={handleNext}
+              aria-label="Next word"
+            >
+              <ChevronRightIcon />
+            </button>
           </div>
 
           <div className="practice-actions">
+            <button
+              className={isCurrentWrong ? "mark-wrong-btn on" : "mark-wrong-btn"}
+              onClick={onToggleCurrentWrong}
+              aria-pressed={isCurrentWrong}
+            >
+              {isCurrentWrong ? "Remove from Wrong List" : "Mark Wrong"}
+            </button>
             <button
               className="listen-btn"
               onClick={() => speakWord(word.english)}
             >
               <SpeakerIcon />
               Listen
-            </button>
-            <button
-              className={isCurrentWrong ? "mark-wrong-btn on" : "mark-wrong-btn"}
-              onClick={onToggleCurrentWrong}
-              aria-pressed={isCurrentWrong}
-            >
-              {isCurrentWrong ? "Marked Wrong" : "Mark Wrong"}
-            </button>
-          </div>
-
-          <div className="practice-nav">
-            <button className="nav-btn" onClick={onPrev}>
-              Back
-            </button>
-            <button className="nav-btn primary" onClick={onNext}>
-              Next
             </button>
           </div>
         </>
