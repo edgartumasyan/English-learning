@@ -485,7 +485,6 @@
   font-weight: 700;
   background: var(--surface-alt);
   color: var(--muted);
-  border: 1px dashed var(--border-strong);
 }
 
 .speak-btn,
@@ -530,7 +529,6 @@
 .chip.hidden {
   background: var(--surface-alt);
   color: var(--muted);
-  border: 1px dashed var(--border-strong);
 }
 .chip.chip-a.shown {
   background: var(--reveal-a-bg);
@@ -616,6 +614,42 @@
   align-items: center;
   gap: 14px;
   flex-wrap: wrap;
+}
+
+.practice-start {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.practice-start-label {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.practice-start-input {
+  width: 64px;
+  background: var(--surface);
+  border: none;
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-family: inherit;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+.practice-start-input::-webkit-outer-spin-button,
+.practice-start-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.practice-start-suffix {
+  color: var(--muted);
+  font-size: 0.75rem;
 }
 
 .practice-empty {
@@ -724,8 +758,9 @@
   color: var(--text);
 }
 .flash-word.masked {
-  color: var(--muted);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.02em;
+  filter: blur(7px);
+  user-select: none;
 }
 
 .flash-hint {
