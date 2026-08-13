@@ -759,7 +759,7 @@
 }
 .flash-word.masked {
   letter-spacing: 0.02em;
-  filter: blur(7px);
+  filter: blur(14px);
   user-select: none;
 }
 
