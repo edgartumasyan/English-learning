@@ -77,7 +77,7 @@ function App() {
   // English word on the card front.
   const [practiceShuffle, setPracticeShuffle] = useState(false);
   const [shuffleOrder, setShuffleOrder] = useState(null);
-  const [hideWord, setHideWord] = useState(false);
+  const [hideWord, setHideWord] = useState(true);
   // Browse shuffle is non-destructive: `browseOrder` is a shuffled index map
   // over `words`, applied only for display, so "Reset Order" just clears it.
   const [browseShuffle, setBrowseShuffle] = useState(false);
@@ -285,6 +285,20 @@ function App() {
       : practiceIdx;
   const practiceWord = practiceWords[practiceWordIdx] || EMPTY_WORD;
   const practiceCount = practiceWords.length;
+  // "Start from" jumps directly to the Nth word (1-based). When shuffled, that
+  // word may sit anywhere in the shuffled order, so we walk back to its position.
+  const startFromValue = practiceCount ? practiceWordIdx + 1 : 0;
+  const handleStartFrom = (e) => {
+    const n = Number(e.target.value);
+    if (!n || n < 1) return;
+    const targetWordIdx = Math.min(n, practiceCount) - 1;
+    const posInOrder =
+      practiceShuffle && shuffleOrder
+        ? shuffleOrder.indexOf(targetWordIdx)
+        : targetWordIdx;
+    setPracticeIdx(posInOrder >= 0 ? posInOrder : targetWordIdx);
+    setPracticeFront(true);
+  };
   const practiceNext = () => {
     setPracticeIdx((i) => (practiceCount ? (i + 1) % practiceCount : 0));
     setPracticeFront(true);
@@ -383,6 +397,8 @@ function App() {
             onToggleShuffle={togglePracticeShuffle}
             hideWord={hideWord}
             onToggleHideWord={toggleHideWord}
+            startFromValue={startFromValue}
+            onChangeStartFrom={handleStartFrom}
             reviewOnly={reviewOnly}
             onToggleReviewOnly={toggleReviewOnly}
             wrongCount={wrongIds.length}

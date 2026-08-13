@@ -82,6 +82,8 @@ function PracticeView({
   onToggleShuffle,
   hideWord,
   onToggleHideWord,
+  startFromValue,
+  onChangeStartFrom,
   reviewOnly,
   onToggleReviewOnly,
   wrongCount,
@@ -127,13 +129,26 @@ function PracticeView({
           )}
         </div>
         <div className="practice-toggles">
-          <Toggle label="Shuffle" on={shuffle} onClick={onToggleShuffle} />
-          <Toggle label="Hide word" on={hideWord} onClick={onToggleHideWord} />
+          <Toggle label="Random" on={shuffle} onClick={onToggleShuffle} />
+          <Toggle label="Show word" on={!hideWord} onClick={onToggleHideWord} />
           <Toggle
             label={`Wrong only (${wrongCount})`}
             on={reviewOnly}
             onClick={onToggleReviewOnly}
           />
+        </div>
+        <div className="practice-start">
+          <span className="practice-start-label">Start from</span>
+          <input
+            id="practice-start-input"
+            className="practice-start-input"
+            type="number"
+            min="1"
+            max={total}
+            value={startFromValue}
+            onChange={onChangeStartFrom}
+          />
+          <span className="practice-start-suffix">of {total}</span>
         </div>
       </div>
 
@@ -154,7 +169,7 @@ function PracticeView({
               {showFront ? (
                 hideWord ? (
                   <>
-                    <div className="flash-word masked">? ? ? ? ?</div>
+                    <div className="flash-word masked">{word.english}</div>
                     <div className="flash-hint">Tap to reveal translation</div>
                   </>
                 ) : (
